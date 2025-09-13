@@ -1,3 +1,4 @@
+import 'package:ai_bot/model/admobhelper.dart';
 import 'package:ai_bot/model/massege_model.dart';
 import 'package:ai_bot/wigtes/ui_helper.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
@@ -20,6 +21,8 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final chatController = TextEditingController();
 
+ AdmobHelper  admobHelper = new AdmobHelper();
+
   @override
   void initState() {
     super.initState();
@@ -27,12 +30,20 @@ class _ChatScreenState extends State<ChatScreen> {
       Provider.of<MessageProvider>(context, listen: false)
           .sendMessage(messag: widget.query);
     });
+    admobHelper.createInterstitialAd();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            admobHelper.showInterstitialAd(); // only show if already loaded
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back_ios_new),
+        ),
         centerTitle: true,
         title: Text.rich(
           TextSpan(

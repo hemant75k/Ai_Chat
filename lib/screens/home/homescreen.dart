@@ -3,7 +3,9 @@ import 'dart:math';
 import 'package:ai_bot/wigtes/ui_helper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
+import '../../model/admobhelper.dart';
 import '../../wigtes/app_constant.dart';
 import '../chat/chat_screen.dart';
 
@@ -15,6 +17,21 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final searchController = TextEditingController();
   int selectedIndex = 0;
+
+
+  BannerAd bAd = new BannerAd(size: AdSize.banner, adUnitId: "ca-app-pub-3940256099942544/9214589741",
+      listener: BannerAdListener(
+        onAdLoaded: (ad) => print('Ad loaded.'),
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+          print('Ad failed to load: $error');
+        },
+        onAdOpened: (ad) => print('Ad opened.'),
+        onAdClosed: (ad) => print('Ad closed.'),
+      ), request: AdRequest());
+
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -102,6 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             builder: (context) =>
                                 ChatScreen(query: searchController.text),));
                       },
+
                       maxLines: 6,
                       style: mTextStyle18(fontColor: Colors.white),
                       decoration: InputDecoration(
@@ -251,6 +269,12 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: Container(
+        height: 60,
+        width: double.infinity,
+        child: AdWidget(ad: bAd..load(),
+        key: UniqueKey(),),
       ),
     );
   }
